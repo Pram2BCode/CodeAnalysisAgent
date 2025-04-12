@@ -5,6 +5,7 @@ from langchain.prompts import PromptTemplate  # LangChain class for creating pro
 from langchain.schema.output_parser import StrOutputParser  # LangChain parser for string output
 from langchain.schema.runnable import RunnableParallel, RunnablePassthrough  # LangChain components for running chains
 from config import GOOGLE_API_KEY, RULES, GEMINI_MODEL_NAME, GEMINI_TEMPERATURE  # Import API key, rules, model name, and temperature from config.py
+import os  # Library for interacting with the operating system
 
 # Define the prompt template for analyzing a single rule
 # This template instructs the AI on how to analyze the code for a specific rule
@@ -334,4 +335,304 @@ def annotate_code(code_content: str, analysis_results: dict):
 
     # Join the lines back into a single string and return
     return "\n".join(annotated_lines)
+
+def scan_directory_structure(base_path):
+    """
+    Recursively scans the directory structure and categorizes files.
+
+    Args:
+        base_path (str): The root directory to scan.
+
+    Returns:
+        dict: A dictionary mapping categories to lists of files.
+    """
+    structure = {
+        'code_files': [],
+        'config_files': [],
+        'data_files': [],
+        'log_files': [],
+        'test_files': [],
+        'other_files': []
+    }
+
+    for root, dirs, files in os.walk(base_path):
+        for file in files:
+            file_path = os.path.join(root, file)
+            if file.endswith(('.py', '.js', '.java', '.cpp')):
+                structure['code_files'].append(file_path)
+            elif file.endswith(('.json', '.yaml', '.yml', '.ini', '.cfg')):
+                structure['config_files'].append(file_path)
+            elif file.endswith(('.csv', '.xls', '.xlsx', '.txt')):
+                structure['data_files'].append(file_path)
+            elif file.endswith(('.log', '.out')):
+                structure['log_files'].append(file_path)
+            elif 'test' in file.lower():
+                structure['test_files'].append(file_path)
+            else:
+                structure['other_files'].append(file_path)
+
+    return structure
+
+def validate_best_practices(directory_structure):
+    """
+    Validates the directory structure against best practices.
+
+    Args:
+        directory_structure (dict): The categorized directory structure.
+
+    Returns:
+        dict: A dictionary of validation results.
+    """
+    validation_results = {
+        'naming_conventions': [],
+        'modularity': [],
+        'essential_files': [],
+        'redundancies': [],
+        'test_placement': []
+    }
+
+    # Validate naming conventions
+    for category, files in directory_structure.items():
+        for file in files:
+            if ' ' in file or '-' in file:
+                validation_results['naming_conventions'].append(f"File '{file}' has invalid naming conventions.")
+
+    # Validate presence of essential files
+    essential_files = ['README.md', '.gitignore', 'requirements.txt']
+    for essential in essential_files:
+        if not any(essential in file for file in directory_structure['other_files']):
+            validation_results['essential_files'].append(f"Missing essential file: {essential}")
+
+    # Validate modularity and test placement
+    for file in directory_structure['test_files']:
+        if not file.startswith('tests/'):
+            validation_results['test_placement'].append(f"Test file '{file}' is not in the 'tests/' directory.")
+
+    return validation_results
+
+def generate_improvement_suggestions(validation_results):
+    """
+    Generates actionable improvement suggestions based on validation results.
+
+    Args:
+        validation_results (dict): The results from best practices validation.
+
+    Returns:
+        list: A list of improvement suggestions.
+    """
+    suggestions = []
+
+    for category, issues in validation_results.items():
+        for issue in issues:
+            if "invalid naming conventions" in issue:
+                suggestions.append(f"{issue} /// Rename the file to follow snake_case or PascalCase naming conventions.")
+            elif "Missing essential file" in issue:
+                suggestions.append(f"{issue} /// Create the missing file and include necessary content.")
+            elif "not in the 'tests/' directory" in issue:
+                suggestions.append(f"{issue} /// Move the test file to a 'tests/' directory.")
+
+    return suggestions
+
+def write_detailed_results_to_file(results, output_file):
+    """
+    Writes detailed and user-friendly results to a specified text file.
+
+    Args:
+        results (dict): The results to write.
+        output_file (str): The path to the output file.
+    """
+    with open(output_file, 'w') as f:
+        f.write("Analysis Results\n")
+        f.write("=" * 50 + "\n\n")
+
+        for category, issues in results.items():
+            f.write(f"Category: {category.upper()}\n")
+            f.write("-" * 50 + "\n")
+
+            if not issues:
+                f.write("No issues found in this category.\n\n")
+            else:
+                for issue in issues:
+                    f.write(f"  - {issue}\n")
+
+            f.write("\n")
+
+        f.write("End of Analysis\n")
+        f.write("=" * 50 + "\n")
+
+# Update the PlannerAgent to generate a detailed results file
+class PlannerAgent:
+    """
+    The Planner Agent is responsible for breaking down tool ideas into modular tasks,
+    identifying dependencies, and prioritizing tasks for development.
+    """
+
+    def __init__(self, tool_ideas):
+        """
+        Initialize the Planner Agent with a list of tool ideas.
+
+        Args:
+            tool_ideas (list): A list of tool ideas to be decomposed and prioritized.
+        """
+        self.tool_ideas = tool_ideas
+        self.tasks = []
+
+    def decompose_tools(self):
+        """
+        Decompose each tool idea into smaller, modular tasks.
+
+        Returns:
+            list: A list of decomposed tasks.
+        """
+        for tool in self.tool_ideas:
+            self.tasks.append({
+                "tool": tool,
+                "subtasks": [
+                    f"Research best practices for {tool}",
+                    f"Design architecture for {tool}",
+                    f"Implement core functionality for {tool}",
+                    f"Write tests for {tool}",
+                    f"Integrate {tool} into CLI/API",
+                    f"Document usage of {tool}"
+                ]
+            })
+        return self.tasks
+
+    def identify_dependencies(self):
+        """
+        Identify dependencies between tasks.
+
+        Returns:
+            dict: A dictionary mapping tasks to their dependencies.
+        """
+        dependencies = {}
+        for task in self.tasks:
+            tool = task["tool"]
+            if tool in ["Security Vulnerability Scanner", "Dependency Visualizer"]:
+                dependencies[tool] = ["Code Smell Detector"]
+            elif tool in ["Test Coverage Heatmap", "Style Consistency Enforcer"]:
+                dependencies[tool] = ["Multi-language Linter Aggregator"]
+            else:
+                dependencies[tool] = []
+        return dependencies
+
+    def prioritize_tasks(self):
+        """
+        Prioritize tasks based on dependencies and importance.
+
+        Returns:
+            list: A prioritized list of tasks.
+        """
+        dependencies = self.identify_dependencies()
+        prioritized = []
+        while self.tasks:
+            for task in self.tasks:
+                tool = task["tool"]
+                if all(dep in prioritized for dep in dependencies[tool]):
+                    prioritized.append(tool)
+                    self.tasks.remove(task)
+        return prioritized
+
+    def generate_detailed_results(self, output_file):
+        """
+        Generate a detailed results file with decomposed tasks, dependencies, and prioritized tasks.
+
+        Args:
+            output_file (str): The path to the output file.
+        """
+        decomposed_tasks = self.decompose_tools()
+        dependencies = self.identify_dependencies()
+        prioritized_tasks = self.prioritize_tasks()
+
+        with open(output_file, 'w') as f:
+            f.write("Detailed Tool Planning Results\n")
+            f.write("=" * 50 + "\n\n")
+
+            f.write("Decomposed Tasks:\n")
+            for task in decomposed_tasks:
+                f.write(f"- Tool: {task['tool']}\n")
+                for subtask in task['subtasks']:
+                    f.write(f"  - {subtask}\n")
+                f.write("\n")
+
+            f.write("Dependencies:\n")
+            for tool, deps in dependencies.items():
+                f.write(f"- {tool}: {', '.join(deps) if deps else 'None'}\n")
+            f.write("\n")
+
+            f.write("Prioritized Tasks:\n")
+            for task in prioritized_tasks:
+                f.write(f"- {task}\n")
+
+            f.write("\nEnd of Detailed Results\n")
+
+# Example usage
+if __name__ == "__main__":
+    while True:
+        print("\nMenu:")
+        print("1. Check file structure best practices")
+        print("2. Check folder structure best practices and security vulnerabilities")
+        print("3. Plan tool development")
+        print("4. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            base_path = input("Enter the path to analyze: ")
+            directory_structure = scan_directory_structure(base_path)
+            validation_results = validate_best_practices(directory_structure)
+            output_file = os.path.join(base_path, 'analysis_results.txt')
+            write_detailed_results_to_file(validation_results, output_file)
+            print(f"Detailed results written to {output_file}")
+
+        elif choice == '2':
+            print("Folder structure security checks are not yet implemented.")
+
+        elif choice == '3':
+            tool_ideas = [
+                "Code Smell Detector",
+                "Dependency Visualizer",
+                "Complexity Analyzer",
+                "API Contract Verifier",
+                "Dead Code Finder",
+                "Git History Insights",
+                "License Compliance Checker",
+                "Performance Bottleneck Analyzer",
+                "Security Vulnerability Scanner",
+                "Test Coverage Heatmap",
+                "Style Consistency Enforcer",
+                "TODO/Comment Tracker",
+                "Refactor Suggestion Engine",
+                "Build Time Analyzer",
+                "Code Duplication Detector",
+                "Tech Debt Dashboard",
+                "Multi-language Linter Aggregator",
+                "Code Comment Quality Checker",
+                "Access Control Auditor",
+                "Merge Conflict Risk Predictor",
+                "Review Readiness Checker",
+                "Annotated Architecture Map",
+                "Legacy Code Detector",
+                "Open Resource Tracker",
+                "i18n Audit Tool"
+            ]
+
+            planner = PlannerAgent(tool_ideas)
+            tasks = planner.decompose_tools()
+            dependencies = planner.identify_dependencies()
+            prioritized_tasks = planner.prioritize_tasks()
+
+            print("Decomposed Tasks:", tasks)
+            print("Dependencies:", dependencies)
+            print("Prioritized Tasks:", prioritized_tasks)
+
+            output_file = "tool_planning_results.txt"
+            planner.generate_detailed_results(output_file)
+            print(f"Detailed tool planning results written to {output_file}")
+
+        elif choice == '4':
+            print("Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
 

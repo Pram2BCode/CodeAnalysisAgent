@@ -2,6 +2,33 @@
 import os  # Operating system functionalities, used for file path operations
 import json  # Library for JSON manipulation
 from analyzer import analyze_code, annotate_code  # Import analysis functions from analyzer.py
+from analyzer import PlannerAgent  # Import PlannerAgent class from analyzer module
+from analyzer import scan_directory_structure  # Import scan_directory_structure function from analyzer module
+from analyzer import validate_best_practices  # Import validate_best_practices function from analyzer module
+from analyzer import write_detailed_results_to_file  # Import write_detailed_results_to_file function from analyzer module
+
+# Define a function to ensure the 'results' directory exists
+def ensure_results_directory():
+    """
+    Ensure that a 'results' directory exists for storing generated reports.
+    """
+    results_dir = os.path.join(os.getcwd(), 'results')
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
+    return results_dir
+
+# Define a function to validate if the provided directory path exists
+def validate_directory_path(directory_path):
+    """
+    Validate if the provided directory path exists.
+
+    Args:
+        directory_path (str): The directory path to validate.
+
+    Returns:
+        bool: True if the directory exists, False otherwise.
+    """
+    return os.path.isdir(directory_path)
 
 # Define the main function to orchestrate the code review process
 def main():
@@ -53,7 +80,8 @@ def main():
     # Get the base name of the file (e.g., 'sample_code' from 'sample_code.py')
     base_name = os.path.splitext(file_name)[0] # Use file_name instead of os.path.basename(file_path)
     # Define the path for the JSON output file
-    json_report_path = f"{base_name}_report.json"
+    results_dir = ensure_results_directory()
+    json_report_path = os.path.join(results_dir, f"{base_name}_report.json")
 
     # Structure the final JSON report according to the README format
     report_data = {
@@ -84,7 +112,7 @@ def main():
     # Create the annotated code using the imported function
     annotated_code_content = annotate_code(code_content, analysis_results)
     # Define the path for the annotated code file
-    annotated_code_path = f"{base_name}_annotated.py"
+    annotated_code_path = os.path.join(results_dir, f"{base_name}_annotated.py")
 
     # Write the annotated code to the file
     try:
@@ -101,7 +129,121 @@ def main():
     # Print a message indicating the completion of the analysis
     print("Analysis complete.")
 
-# Check if the script is being run directly (not imported)
 if __name__ == "__main__":
-    # Call the main function to start the process
-    main()
+    while True:
+        print("\nMenu:")
+        print("1. Analyze Python file")
+        print("2. Check file structure best practices")
+        print("3. Check folder structure best practices and security vulnerabilities")
+        print("4. Plan tool development")
+        print("5. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            file_path = input("Enter the full path of the Python file to analyze: ")
+            if not os.path.isfile(file_path):
+                print(f"Error: File '{file_path}' not found.")
+                continue
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    code_content = f.read()
+                analysis_results = analyze_code(code_content)
+                annotated_code_content = annotate_code(code_content, analysis_results)
+                results_dir = ensure_results_directory()
+                annotated_code_path = os.path.join(results_dir, 'xcode_annotated.py')
+                with open(annotated_code_path, 'w', encoding='utf-8') as f:
+                    f.write(annotated_code_content)
+                print(f"Annotated code saved to: {annotated_code_path}")
+            except Exception as e:
+                print(f"Error during analysis: {e}")
+
+        elif choice == '2':
+            base_path = input("Enter the full path of the directory to analyze: ")
+            if not validate_directory_path(base_path):
+                print(f"Error: Directory '{base_path}' not found.")
+                continue
+            directory_structure = scan_directory_structure(base_path)
+            validation_results = validate_best_practices(directory_structure)
+            results_dir = ensure_results_directory()
+            output_file = os.path.join(results_dir, 'analysis_results.txt')
+            write_detailed_results_to_file(validation_results, output_file)
+            print(f"Detailed results written to {output_file}")
+
+        elif choice == '3':
+            base_path = input("Enter the full path of the directory to analyze: ")
+            if not validate_directory_path(base_path):
+                print(f"Error: Directory '{base_path}' not found.")
+                continue
+            try:
+                directory_structure = scan_directory_structure(base_path)
+                results_dir = ensure_results_directory()
+                output_file = os.path.join(results_dir, 'folder_structure_analysis.txt')
+                with open(output_file, 'w') as f:
+                    f.write("Folder Structure Analysis Results:\n\n")
+                    f.write("The directory structure was analyzed and categorized as follows:\n")
+                    for category, files in directory_structure.items():
+                        f.write(f"- {category}: {len(files)} files\n")
+                    f.write("\nInsights:\n")
+                    f.write("- Ensure that test files are present to validate the codebase effectively.\n")
+                    f.write("- Consider organizing data files into a dedicated 'data' folder for better clarity.\n")
+                    f.write("- Logs should be rotated or archived periodically to avoid clutter.\n")
+                print(f"Folder structure analysis results written to {output_file}")
+            except Exception as e:
+                print(f"Error during folder structure analysis: {e}")
+
+        elif choice == '4':
+            tool_ideas = [
+                "Code Smell Detector",
+                "Dependency Visualizer",
+                "Complexity Analyzer",
+                "API Contract Verifier",
+                "Dead Code Finder",
+                "Git History Insights",
+                "License Compliance Checker",
+                "Performance Bottleneck Analyzer",
+                "Security Vulnerability Scanner",
+                "Test Coverage Heatmap",
+                "Style Consistency Enforcer",
+                "TODO/Comment Tracker",
+                "Refactor Suggestion Engine",
+                "Build Time Analyzer",
+                "Code Duplication Detector",
+                "Tech Debt Dashboard",
+                "Multi-language Linter Aggregator",
+                "Code Comment Quality Checker",
+                "Access Control Auditor",
+                "Merge Conflict Risk Predictor",
+                "Review Readiness Checker",
+                "Annotated Architecture Map",
+                "Legacy Code Detector",
+                "Open Resource Tracker",
+                "i18n Audit Tool"
+            ]
+
+            planner = PlannerAgent(tool_ideas)
+            tasks = planner.decompose_tools()
+            dependencies = planner.identify_dependencies()
+            prioritized_tasks = planner.prioritize_tasks()
+
+            results_dir = ensure_results_directory()
+            output_file = os.path.join(results_dir, 'tool_planning_results.txt')
+            with open(output_file, 'w') as f:
+                f.write("Tool Planning Results:\n\n")
+                f.write("The following tools were decomposed into tasks:\n")
+                for task in tasks:
+                    f.write(f"- {task['tool']}\n")
+                f.write("\nDependencies between tools were identified as follows:\n")
+                for tool, deps in dependencies.items():
+                    f.write(f"- {tool}: {', '.join(deps) if deps else 'None'}\n")
+                f.write("\nThe tools were prioritized in the following order:\n")
+                for task in prioritized_tasks:
+                    f.write(f"- {task}\n")
+
+            print(f"Tool planning results written to {output_file}")
+
+        elif choice == '5':
+            print("Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")

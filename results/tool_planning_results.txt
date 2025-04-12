@@ -1,0 +1,57 @@
+Tool Planning Results:
+
+The following tools were decomposed into tasks:
+
+Dependencies between tools were identified as follows:
+- Code Smell Detector: None
+- Dependency Visualizer: Code Smell Detector
+- Complexity Analyzer: None
+- API Contract Verifier: None
+- Dead Code Finder: None
+- Git History Insights: None
+- License Compliance Checker: None
+- Performance Bottleneck Analyzer: None
+- Security Vulnerability Scanner: Code Smell Detector
+- Test Coverage Heatmap: Multi-language Linter Aggregator
+- Style Consistency Enforcer: Multi-language Linter Aggregator
+- TODO/Comment Tracker: None
+- Refactor Suggestion Engine: None
+- Build Time Analyzer: None
+- Code Duplication Detector: None
+- Tech Debt Dashboard: None
+- Multi-language Linter Aggregator: None
+- Code Comment Quality Checker: None
+- Access Control Auditor: None
+- Merge Conflict Risk Predictor: None
+- Review Readiness Checker: None
+- Annotated Architecture Map: None
+- Legacy Code Detector: None
+- Open Resource Tracker: None
+- i18n Audit Tool: None
+
+The tools were prioritized in the following order:
+- Code Smell Detector
+- Complexity Analyzer
+- Dead Code Finder
+- License Compliance Checker
+- Security Vulnerability Scanner
+- TODO/Comment Tracker
+- Build Time Analyzer
+- Tech Debt Dashboard
+- Code Comment Quality Checker
+- Merge Conflict Risk Predictor
+- Annotated Architecture Map
+- Open Resource Tracker
+- Dependency Visualizer
+- Git History Insights
+- Refactor Suggestion Engine
+- Multi-language Linter Aggregator
+- Review Readiness Checker
+- i18n Audit Tool
+- API Contract Verifier
+- Test Coverage Heatmap
+- Code Duplication Detector
+- Legacy Code Detector
+- Performance Bottleneck Analyzer
+- Access Control Auditor
+- Style Consistency Enforcer
