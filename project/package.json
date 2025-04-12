@@ -1,0 +1,45 @@
+{
+  "name": "code-audit-tool-suite",
+  "displayName": "Code Audit Tool Suite",
+  "description": "A comprehensive code audit tool for linting, security scanning, and maintainability checks.",
+  "version": "0.1.0",
+  "publisher": "your-publisher-name",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:codeAudit.runFullAudit",
+    "onCommand:codeAudit.runLinter",
+    "onCommand:codeAudit.checkSecurityIssues"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeAudit.runFullAudit",
+        "title": "Run Full Code Audit"
+      },
+      {
+        "command": "codeAudit.runLinter",
+        "title": "Run Linter"
+      },
+      {
+        "command": "codeAudit.checkSecurityIssues",
+        "title": "Check for Security Issues"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^16.0.0",
+    "typescript": "^4.0.0",
+    "@types/vscode": "^1.74.0",
+    "@vscode/test-electron": "^2.0.0"
+  }
+}
