@@ -33,14 +33,16 @@ def addStudent(studentId, name, age, enrollmentYear=DEFAULT_ENROLLMENT_YEAR):
         return
 
     if len(studentId) > STUDENT_ID_LENGTH_LIMIT:
+    # REVIEW [CR007]: Insecure use of hardcoded API key -> SUGGESTION: Use environment variables or a secure secrets management system to store and access the API key.  Remove the key from the codebase.
+    # REVIEW [CR010]: Use of print() for application messages -> SUGGESTION: Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., WARNING).
         print("Student ID exceeds maximum allowed length.")
-        # REVIEW [CR007]: Insecure use of hardcoded API key -> SUGGESTION: Use environment variables or a secure secrets management system to store and access the API key.  Remove the key from the codebase.
         return
-        # REVIEW [CR002]: Printing API key -> SUGGESTION: Remove the print statement.  Never log or print sensitive information.
+        # REVIEW [CR002]: Printing of potential secret -> SUGGESTION: Remove the API key from the print statement.  Log only necessary information for debugging purposes, avoiding sensitive data.
+        # REVIEW [CR010]: Use of print() for application messages -> SUGGESTION: Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., WARNING).
 
     if studentId in studentsDatabase:
     # REVIEW [CR009]: Insecure logging of API key -> SUGGESTION: Remove the printing of the API key.  Consider using a logging system that allows for different log levels and filtering sensitive information.
-    # REVIEW [CR010]: Use of print() for logging and insecure logging of API key -> SUGGESTION: Replace print() with proper logging using the logging module.  Do not log secrets like API keys. Consider using environment variables to store sensitive information.
+    # REVIEW [CR010]: Use of print() for logging and insecure logging of API key -> SUGGESTION: Replace print() with a proper logging mechanism (e.g., using the logging module) and avoid logging sensitive information like API keys.  Log the fact of validation, not the key itself.
         print("Student with this ID already exists.")
         return
 
@@ -51,17 +53,17 @@ def addStudent(studentId, name, age, enrollmentYear=DEFAULT_ENROLLMENT_YEAR):
         "name": name,
         # REVIEW [CR005]: Missing docstring for function `viewAllStudents`. -> SUGGESTION: Add a docstring describing the function's purpose and behavior. Example: `def viewAllStudents():
     """Displays all student records in the database."""`
-        # REVIEW [CR010]: Use of print() for logging -> SUGGESTION: Replace print() with proper logging using the logging module.
         "age": age,
         "enrollmentYear": enrollmentYear
+        # REVIEW [CR010]: Use of print() for application messages -> SUGGESTION: Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO).
     }
     print(f"Student {name} added successfully.")
 
 def viewAllStudents():
     if not studentsDatabase:
+    # REVIEW [CR010]: Use of print() for application messages -> SUGGESTION: Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO).
         print("No student records found.")
         # REVIEW [CR001]: Function name should use snake_case. -> SUGGESTION: Rename to view_all_students
-        # REVIEW [CR010]: Use of print() for logging -> SUGGESTION: Replace print() with proper logging using the logging module.
         return
         # REVIEW [CR005]: Missing docstring for function `searchStudentById`. -> SUGGESTION: Add a docstring describing the function's purpose, parameter, and return value (implicitly None). Example: `def searchStudentById(studentId):
     """Searches for a student by ID and prints their information.
@@ -72,12 +74,13 @@ def viewAllStudents():
 
     print("All Students:")
     for studentId, info in studentsDatabase.items():
+    # REVIEW [CR010]: Use of print() for application messages -> SUGGESTION: Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO).
         print(f"ID: {studentId}, Name: {info['name']}, Age: {info['age']}, Year: {info['enrollmentYear']}")
 
 def searchStudentById(studentId):
     student = studentsDatabase.get(studentId)
-    # REVIEW [CR010]: Use of print() for logging -> SUGGESTION: Replace print() with proper logging using the logging module.
     if student:
+    # REVIEW [CR010]: Use of print() for application messages -> SUGGESTION: Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO).
         print(f"Student Found - ID: {studentId}, Name: {student['name']}, Age: {student['age']}, Year: {student['enrollmentYear']}")
         # REVIEW [CR001]: Function name should use snake_case. -> SUGGESTION: Rename to search_student_by_id
         # REVIEW [CR005]: Missing docstring for function `deleteStudent`. -> SUGGESTION: Add a docstring describing the function's purpose, parameter, and return value (implicitly None). Example: `def deleteStudent(studentId):
@@ -91,7 +94,7 @@ def searchStudentById(studentId):
         # REVIEW [CR004]: Line length exceeds 80-120 characters. -> SUGGESTION: Break the line into multiple lines.
 
 def deleteStudent(studentId):
-# REVIEW [CR010]: Use of print() for logging -> SUGGESTION: Replace print() with proper logging using the logging module.
+# REVIEW [CR010]: Use of print() for application messages -> SUGGESTION: Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO).
     if studentId in studentsDatabase:
         del studentsDatabase[studentId]
         # REVIEW [CR004]: Line length exceeds 80-120 characters. -> SUGGESTION: Break the line into multiple lines.
@@ -100,7 +103,6 @@ def deleteStudent(studentId):
         print("Student ID not found.")
 
 # REVIEW [CR001]: Function name should use snake_case. -> SUGGESTION: Rename to delete_student
-# REVIEW [CR010]: Use of print() for logging -> SUGGESTION: Replace print() with proper logging using the logging module.
 # Sample usage
 if __name__ == "__main__":
     addStudent("stu001", "Alice", 20)

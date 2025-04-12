@@ -3,9 +3,6 @@ import os  # Operating system functionalities, used for file path operations
 import json  # Library for JSON manipulation
 from analyzer import analyze_code, annotate_code  # Import analysis functions from analyzer.py
 
-# Update the working directory to the 'project' folder
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
 # Define the main function to orchestrate the code review process
 def main():
     """Main function to handle user input, file reading, analysis, and output writing."""

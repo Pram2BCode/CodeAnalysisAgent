@@ -56,8 +56,8 @@
                 },
                 {
                     "line": 16,
-                    "issue": "Printing API key",
-                    "suggestion": "Remove the print statement.  Never log or print sensitive information."
+                    "issue": "Printing of potential secret",
+                    "suggestion": "Remove the API key from the print statement.  Log only necessary information for debugging purposes, avoiding sensitive data."
                 }
             ]
         },
@@ -135,7 +135,7 @@
             "rule_id": "CR007",
             "violations": [
                 {
-                    "line": 15,
+                    "line": 14,
                     "issue": "Insecure use of hardcoded API key",
                     "suggestion": "Use environment variables or a secure secrets management system to store and access the API key.  Remove the key from the codebase."
                 }
@@ -157,32 +157,42 @@
                 {
                     "line": 18,
                     "issue": "Use of print() for logging and insecure logging of API key",
-                    "suggestion": "Replace print() with proper logging using the logging module.  Do not log secrets like API keys. Consider using environment variables to store sensitive information."
+                    "suggestion": "Replace print() with a proper logging mechanism (e.g., using the logging module) and avoid logging sensitive information like API keys.  Log the fact of validation, not the key itself."
                 },
                 {
-                    "line": 26,
-                    "issue": "Use of print() for logging",
-                    "suggestion": "Replace print() with proper logging using the logging module."
+                    "line": 28,
+                    "issue": "Use of print() for application messages",
+                    "suggestion": "Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO)."
                 },
                 {
-                    "line": 34,
-                    "issue": "Use of print() for logging",
-                    "suggestion": "Replace print() with proper logging using the logging module."
+                    "line": 33,
+                    "issue": "Use of print() for application messages",
+                    "suggestion": "Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO)."
                 },
                 {
-                    "line": 42,
-                    "issue": "Use of print() for logging",
-                    "suggestion": "Replace print() with proper logging using the logging module."
+                    "line": 38,
+                    "issue": "Use of print() for application messages",
+                    "suggestion": "Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO)."
+                },
+                {
+                    "line": 43,
+                    "issue": "Use of print() for application messages",
+                    "suggestion": "Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO)."
                 },
                 {
                     "line": 48,
-                    "issue": "Use of print() for logging",
-                    "suggestion": "Replace print() with proper logging using the logging module."
+                    "issue": "Use of print() for application messages",
+                    "suggestion": "Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., INFO)."
                 },
                 {
-                    "line": 54,
-                    "issue": "Use of print() for logging",
-                    "suggestion": "Replace print() with proper logging using the logging module."
+                    "line": 14,
+                    "issue": "Use of print() for application messages",
+                    "suggestion": "Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., WARNING)."
+                },
+                {
+                    "line": 16,
+                    "issue": "Use of print() for application messages",
+                    "suggestion": "Replace print() with a proper logging mechanism (e.g., using the logging module) at an appropriate log level (e.g., WARNING)."
                 }
             ]
         }
