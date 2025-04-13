@@ -25,26 +25,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
+/**
+ * Executes the main.py script and logs the output to the VS Code terminal.
+ */
+function runMainPy() {
+    const terminal = vscode.window.createTerminal('Code Analysis');
+    terminal.show();
+    terminal.sendText('python3 /workspaces/CodeAnalysisAgent/project/main.py');
+}
+/**
+ * Activates the extension and registers the command.
+ * @param context - The extension context provided by VS Code.
+ */
 function activate(context) {
-    // Register the command for running a full code audit
-    const runFullAudit = vscode.commands.registerCommand('codeAudit.runFullAudit', () => {
-        vscode.window.showInformationMessage('Running Full Code Audit...');
-        // Add logic to invoke the full code audit tool
+    const disposable = vscode.commands.registerCommand('codeAudit.runAnalysis', () => {
+        runMainPy();
     });
-    // Register the command for running the linter
-    const runLinter = vscode.commands.registerCommand('codeAudit.runLinter', () => {
-        vscode.window.showInformationMessage('Running Linter...');
-        // Add logic to invoke the linter tool
-    });
-    // Register the command for checking security issues
-    const checkSecurityIssues = vscode.commands.registerCommand('codeAudit.checkSecurityIssues', () => {
-        vscode.window.showInformationMessage('Checking for Security Issues...');
-        // Add logic to invoke the security scanning tool
-    });
-    // Add the commands to the context subscriptions
-    context.subscriptions.push(runFullAudit, runLinter, checkSecurityIssues);
+    context.subscriptions.push(disposable);
 }
 exports.activate = activate;
+/**
+ * Deactivates the extension.
+ */
 function deactivate() {
     // Cleanup logic if needed
 }

@@ -1,35 +1,26 @@
 {
   "name": "code-audit-tool-suite",
   "displayName": "Code Audit Tool Suite",
-  "description": "A comprehensive code audit tool for linting, security scanning, and maintainability checks.",
-  "version": "0.1.0",
-  "publisher": "your-publisher-name",
+  "description": "A VS Code extension to execute main.py for code analysis.",
+  "version": "1.0.0",
+  "publisher": "pramod-l-malagi",
   "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.74.0"
   },
-  "categories": [
-    "Other"
-  ],
   "activationEvents": [
-    "onCommand:codeAudit.runFullAudit",
-    "onCommand:codeAudit.runLinter",
-    "onCommand:codeAudit.checkSecurityIssues"
+    "onCommand:codeAudit.runAnalysis"
   ],
   "main": "./out/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pram2BCode/CodeAnalysisAgent.git"
+  },
   "contributes": {
     "commands": [
       {
-        "command": "codeAudit.runFullAudit",
-        "title": "Run Full Code Audit"
-      },
-      {
-        "command": "codeAudit.runLinter",
-        "title": "Run Linter"
-      },
-      {
-        "command": "codeAudit.checkSecurityIssues",
-        "title": "Check for Security Issues"
+        "command": "codeAudit.runAnalysis",
+        "title": "Run Code Analysis"
       }
     ]
   },
