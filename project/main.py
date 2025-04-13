@@ -30,6 +30,33 @@ def validate_directory_path(directory_path):
     """
     return os.path.isdir(directory_path)
 
+def save_annotated_code(code_content, analysis_results, user_file):
+    print("Step 1: Preparing to save the annotated code...")
+
+    # Extract the base name of the user file (without extension)
+    base_name = os.path.splitext(os.path.basename(user_file))[0]
+    print(f"Step 2: Extracted base name: {base_name}")
+
+    # Define the directory for the annotated file
+    annotated_dir = os.path.join(os.getcwd(), f"{base_name}_Annotated")
+    print(f"Step 3: Annotated directory path: {annotated_dir}")
+
+    # Create the directory if it doesn't exist
+    os.makedirs(annotated_dir, exist_ok=True)
+    print(f"Step 4: Created directory (if not existing): {annotated_dir}")
+
+    # Define the path for the annotated code file
+    annotated_code_path = os.path.join(annotated_dir, f"{base_name}_annotated.py")
+    print(f"Step 5: Annotated code file path: {annotated_code_path}")
+
+    try:
+        # Write the annotated code to the file
+        with open(annotated_code_path, 'w', encoding='utf-8') as f:
+            f.write(annotate_code(code_content, analysis_results))
+        print(f"Step 6: Annotated code saved successfully to: {annotated_code_path}")
+    except Exception as e:
+        print(f"Error: Failed to save annotated code to {annotated_code_path}. Error: {e}")
+
 # Define the main function to orchestrate the code review process
 def main():
     """Main function to handle user input, file reading, analysis, and output writing."""
@@ -109,22 +136,9 @@ def main():
         print(f"Error writing JSON report {json_report_path}: {e}")
 
     # --- Generate Annotated Code --- 
-    # Create the annotated code using the imported function
-    annotated_code_content = annotate_code(code_content, analysis_results)
-    # Define the path for the annotated code file
-    annotated_code_path = os.path.join(results_dir, f"{base_name}_annotated.py")
-
-    # Write the annotated code to the file
-    try:
-        # Open the annotated code file in write mode with UTF-8 encoding
-        with open(annotated_code_path, 'w', encoding='utf-8') as f:
-            # Write the annotated code content to the file
-            f.write(annotated_code_content)
-        # Print confirmation message for the annotated code file
-        print(f"Annotated code saved to: {annotated_code_path}")
-    except Exception as e:
-        # Print an error message if writing the annotated code fails
-        print(f"Error writing annotated code {annotated_code_path}: {e}")
+    print("Starting the annotation process...")
+    save_annotated_code(code_content, analysis_results, file_path)
+    print("Annotation process completed.")
 
     # Print a message indicating the completion of the analysis
     print("Analysis complete.")

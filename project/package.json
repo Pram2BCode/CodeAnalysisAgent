@@ -4,6 +4,7 @@
   "description": "A comprehensive code audit tool for linting, security scanning, and maintainability checks.",
   "version": "0.1.0",
   "publisher": "your-publisher-name",
+  "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.74.0"
   },
